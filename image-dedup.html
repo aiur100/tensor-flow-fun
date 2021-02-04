@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
+</head>
+<style>
+	body {
+		background-color: black;
+	}
+</style>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg">
+				<div class="card m-1">
+					<div class="card-header">
+						<h2 class="card-title">Upload Original</h2>
+					</div>
+					<div class="card-body">
+						<p class="p-2">
+  							<input class="form-control form-control-lg" id="original" type="file">
+						</p>
+						<p class="p-2">
+							<button class="btn btn-info" id="correct">Correct</button>
+							<button class="btn btn-info" id="incorrect">Incorrect</button>
+						</p>
+					</div>
+				</div>
+				<div class="card m-1">
+					<div class="card-body">
+						<img id="originalPreview" src="https://bourdagreen.com/wp-content/uploads/2020/04/npa2.jpg" class="img-thumbnail" alt="...">
+					</div>
+				</div>
+			</div>
+			<div class="col-lg">
+				<div class="card m-1">
+					<div class="card-header">
+						<h2 class="card-title">Upload Challenge</h2>
+					</div>
+					<div class="card-body">
+						<p class="p-2">
+  							<input class="form-control form-control-lg" id="challenge" type="file">
+						</p>
+						<p class="p-2">
+							<button class="btn btn-info" id="predict">Predict</button>
+						</p>
+						<p class="p-2" id="prediction">
+
+						</p>
+					</div>
+				</div>
+				<div class="card m-1">
+					<div class="card-body">
+						<img id="challengePreview" src="https://bourdagreen.com/wp-content/uploads/2020/04/npa2.jpg" class="img-thumbnail" alt="...">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="dedup.js" type="module"></script>
+</html>

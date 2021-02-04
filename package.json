@@ -4,12 +4,15 @@
   "description": "",
   "main": "data.js",
   "scripts": {
+    "start": "./node_modules/browser-sync/dist/bin.js start --server --files \"*.html\" \"*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "compressorjs": "^1.0.7"
+  },
   "devDependencies": {
     "browser-sync": "^2.26.14"
   }
