@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
+
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: black;
+    }
+</style>
+<body>
+    
+    <div id="app" class="container-fluid">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h1 class="card-title">Tensor Flow Fun</h1>
+            </div>
+
+            <div class="card-body">
+
+               <div class="row">
+
+                   <div class="col-lg">
+
+                        <div class="card">
+
+                            <div class="card-body">
+                                <video autoplay playsinline muted id="webcam" width="400px" height="400px"></video>
+                            </div>
+
+                        </div>
+
+                   </div>
+
+                   <div class="col-lg">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <button id="Kevin-Bacon" class="btn btn-warning">Kevin Bacon</button>
+                            <button id="Neo-Hill" class="btn btn-dark">Neo Hill</button>
+                            <button id="Touch-Face" class="btn btn-info">Touching Face</button>
+                            <button id="Not-Touch" class="btn btn-info">Not Touching Face</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        
+
+                        <div class="card-body" >
+                            <h3 class="card-title">BMO Says it may be...</h3>
+                            <hr>
+                            <div id="prediction">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+               </div>
+
+               </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+let net;
+const webcamElement = document.getElementById('webcam');
+const classifier = knnClassifier.create();
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function resultString(result){
+    return Array.isArray(result) && result.length > 0 ? result.reduce((accum,curr,index) => {
+        accum += "<li>"+curr.className+" - "+(curr.probability*100).toFixed(2)+"%</li>";
+        if(index+1 === result.length){
+            accum += "</ul>";
+        }
+        return accum;
+    },"<ul>") : "<h3>Nothing here yet...</h3>";
+}
+
+function speak(text){
+    var synth = window.speechSynthesis;
+    var utterThis = new SpeechSynthesisUtterance(text);
+    synth.speak(utterThis);
+}
+
+async function app() {
+  console.log('Loading mobilenet..');
+
+  // Load the model.
+  net = await mobilenet.load();
+  console.log('Successfully loaded model');
+
+  // Create an object from Tensorflow.js data API which could capture image 
+  // from the web camera as Tensor.
+  const webcam = await tf.data.webcam(webcamElement);
+
+  // Reads an image from the webcam and associates it with a specific class
+  // index.
+  const addExample = async classId => {
+    // Capture an image from the web camera.
+    const img = await webcam.capture();
+
+    // Get the intermediate activation of MobileNet 'conv_preds' and pass that
+    // to the KNN classifier.
+    const activation = net.infer(img, true);
+
+    // Pass the intermediate activation to the classifier.
+    classifier.addExample(activation, classId);
+
+    // Dispose the tensor to release the memory.
+    img.dispose();
+  };
+
+  // When clicking a button, add an example for that class.
+  document.getElementById('Kevin-Bacon').addEventListener('click', () => addExample(0));
+  document.getElementById('Neo-Hill').addEventListener('click', () => addExample(1));
+  document.getElementById('Touch-Face').addEventListener('click', () => addExample(2));
+  document.getElementById('Not-Touch').addEventListener('click', () => addExample(3));
+
+  while (true) {
+    if (classifier.getNumClasses() > 0) {
+      const img = await webcam.capture();
+
+      // Get the activation from mobilenet from the webcam.
+      const activation = net.infer(img, 'conv_preds');
+      // Get the most likely class and confidence from the classifier module.
+      const result = await classifier.predictClass(activation);
+
+      const classes = ['Kevin Bacon', 'Neo Hill','Touching Face','Not Touching Face'];
+      document.getElementById('prediction').innerHTML = `
+        prediction: ${classes[result.label]}<br>
+        probability: ${(result.confidences[result.label]*100).toFixed(2)}%
+      `;
+        console.log(result.label);
+      if(classes[result.label] === classes[2]){
+          speak(classes[2]);
+      }
+
+      // Dispose the tensor to release the memory.
+      img.dispose();
+    }
+
+    await tf.nextFrame();
+    await sleep(3000);
+  }
+}
+
+app();
+</script>
+</body>
+</html>
