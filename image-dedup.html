@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
+	<script src="https://unpkg.com/jimp@0.14.0/browser/lib/jimp.js"></script>
 </head>
 <style>
 	body {
@@ -27,8 +28,7 @@
   							<input class="form-control form-control-lg" id="original" type="file">
 						</p>
 						<p class="p-2">
-							<button class="btn btn-info" id="correct">Correct</button>
-							<button class="btn btn-info" id="incorrect">Incorrect</button>
+							<button class="btn btn-info" id="correct">Train</button>
 						</p>
 					</div>
 				</div>
@@ -63,6 +63,15 @@
 			</div>
 		</div>
 	</div>
+	<img id="inc_1" src="incorrect/1.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_2" src="incorrect/2.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_3" src="incorrect/3.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_4" src="incorrect/4.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_5" src="incorrect/5.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_6" src="incorrect/6.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_7" src="incorrect/6.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_8" src="incorrect/6.jpg" class="img-thumbnail" alt="...">
+	<img id="inc_9" src="incorrect/6.jpg" class="img-thumbnail" alt="...">
 </body>
 <script src="dedup.js" type="module"></script>
 </html>
