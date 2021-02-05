@@ -28,7 +28,11 @@
   							<input class="form-control form-control-lg" id="original" type="file">
 						</p>
 						<p class="p-2">
-							<button class="btn btn-info" id="correct">Train</button>
+							<button class="btn btn-info" id="correct">
+								<span id="train-text">Train</span>
+								<span id="training-loading" class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+								<span class="visually-hidden">Loading...</span>
+							</button>
 						</p>
 					</div>
 				</div>
@@ -51,7 +55,7 @@
 							<button class="btn btn-info" id="predict">Predict</button>
 						</p>
 						<p class="p-2" id="prediction">
-
+							<em>Nothing to predict yet...</em>
 						</p>
 					</div>
 				</div>
