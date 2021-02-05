@@ -59,7 +59,8 @@ let net;
 	correct.onclick = event => {
 		// Get the intermediate activation of MobileNet 'conv_preds' and pass that
 		// to the KNN classifier.
-		const activation = net.infer(originalPreview, true);
+		const img = tf.browser.fromPixels(originalPreview);
+		const activation = net.infer(img, true);
 		console.log("Trained correct...",originalPreview);
 		// Pass the intermediate activation to the classifier.
 		classifier.addExample(activation, 0);
