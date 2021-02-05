@@ -49,7 +49,7 @@ let net;
 	// Load the model.
 	net = await mobilenet.load();
 	console.log('Successfully loaded model');
-	const classes = ["original","not-original"];
+	const classes = ["correct","incorrect"];
 
 	const correct = document.getElementById("correct");
 	const incorrect = document.getElementById("incorrect");
@@ -79,11 +79,12 @@ let net;
 		const activation = net.infer(challengePreview, 'conv_preds');
 		// Get the most likely class and confidence from the classifier module.
 		const result = await classifier.predictClass(activation);
-  
-		predictOutput.innerHTML = `
-		  prediction: ${classes[result.label]}<br>
-		  probability: ${result.confidences[result.label]}
-		`;
+		const confidence = parseInt((result.confidences[result.label]*100).toFixed(2));
+		console.log(confidence,result.label,typeof confidence);
+		const message = confidence > 95 && result.label == 0   ? 
+						"This is the correct image (duplicate)" :
+						"This is the incorrect image";
+		predictOutput.innerHTML = message;
 	}
 
 })().catch(error => {
