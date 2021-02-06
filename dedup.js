@@ -37,7 +37,7 @@ async function process(file,ratio=0.3,quality=100,base64=true){
 	const x = parseInt(640 * ratio);
 	const y = parseInt(480 * ratio);
 	const qcrop = await resized.quality(quality);
-	const cropped = await qcrop.crop(x, y, 250, 200).rgba(false).greyscale().posterize(4);
+	const cropped = await qcrop.crop(x, y, 300, 200).rgba(false).greyscale().posterize(4);
 	//console.log("JIMP IMG",cropped);
 	return await (base64 ? cropped.getBase64Async("image/jpeg") : cropped.getBufferAsync("image/jpeg"));
 }
@@ -67,15 +67,6 @@ challenge.onchange = event => {
 const classifier = knnClassifier.create();
 let net;
 
-function getByteNumbers(base64string){
-	const b = atob(base64string)
-	let byteNumbers = new Array(b.length);
-	for (let i = 0; i < b.length; i++) {
-		byteNumbers[i] = b.charCodeAt(i);
-	}
-	return byteNumbers;
-}
-
 (async function(){
 
 	// Load the model.
@@ -88,7 +79,7 @@ function getByteNumbers(base64string){
 	const predictButton = document.getElementById("predict");
 	const predictOutput = document.getElementById("prediction");
 
-	const qualities = [100,50,40,2];
+	const qualities = [100,80,50,10,9,2];
 	const ratios = [0.3,0.4];
 
 	function createImage(base64str){
@@ -189,12 +180,12 @@ function getByteNumbers(base64string){
 		const confidence = parseInt((result.confidences[result.label]*100).toFixed(2));
 		console.log({ result });
 
-		/*
+		
 		const message = confidence > 95 && result.label == 0   ? 
 						"This is the correct image (duplicate)" :
 						"This is the incorrect image";
-						*/
-		predictOutput.innerHTML = JSON.stringify(result,null,2);
+	
+		predictOutput.innerHTML = `${message}<br><br>${JSON.stringify(result,null,2)}`;
 						/*
 		predictOutput.innerHTML = `${message}<br>
 			<b>Confidence:</b>${confidence}%<br>
