@@ -79,8 +79,8 @@ let net;
 	const predictButton = document.getElementById("predict");
 	const predictOutput = document.getElementById("prediction");
 
-	const qualities = [100,80,50,10,9,2];
-	const ratios = [0.3,0.4];
+	const qualities = [100,90,80,70,50,60,10,9,8,2];
+	const ratios = [0.4];
 
 	function createImage(base64str){
 		return new Promise((resolve, reject) => {
@@ -138,7 +138,11 @@ let net;
 			"inc_5",
 			"inc_6",
 			"inc_7",
-			"inc_8"
+			"inc_8",
+			"inc_9",
+			"inc_10",
+			"inc_11",
+			"inc_12"
 		];
 
 		for(let x = 0; x < incorrect.length; x++){
@@ -168,7 +172,7 @@ let net;
 	}
 
 	predictButton.onclick = async event => {
-		const preview = await process(challengePreview.src,0.3);
+		const preview = await process(challengePreview.src,0.4);
 		challengePreview.src = preview;
 		const imgEl = await createImage(preview);
 
@@ -182,8 +186,8 @@ let net;
 
 		
 		const message = confidence > 95 && result.label == 0   ? 
-						"This is the correct image (duplicate)" :
-						"This is the incorrect image";
+						"&#9989; This is a near duplicate to the original &#9989;" :
+						`<i class="bi bi-x-circle-fill text-danger"></i> This is not the original`;
 	
 		predictOutput.innerHTML = `${message}<br><br>${JSON.stringify(result,null,2)}`;
 						/*

@@ -1,0 +1,40 @@
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+service: rle-core-serverless
+
+plugins:
+  - serverless-s3-sync
+
+provider:
+  name: aws
+  region: us-east-1
+  profile: pasley_hill_admin
+
+custom:
+  bucketName: ${opt:stage, self:provider.stage}-deduplication-testing
+  s3Sync:
+    # A simple configuration for copying static assets 
+    - bucketName: ${opt:stage, self:provider.stage}-deduplication-testing # required 
+      localDir: ./ # required 
+      acl: public-read # optional 
+
+# you can define service wide environment variables here
+  environment:
+    bucket-name: ${opt:stage, self:provider.stage}-deduplication-testing
+
+resources:
+  Resources:
+    CloudFormationBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          ErrorDocument: error.html
+          IndexDocument: image-dedup.html
+  Outputs:
+     NewOutput:
+       Description: "Description for the output"
+       Value: "Some output value"
