@@ -37,7 +37,7 @@ async function process(file,ratio=0.3,quality=100,base64=true){
 	const x = parseInt(640 * ratio);
 	const y = parseInt(480 * ratio);
 	const qcrop = await resized.quality(quality);
-	const cropped = await qcrop.crop(x, y, 200, 200).rgba(false).greyscale();
+	const cropped = await qcrop.crop(x, y, 250, 200).rgba(false).greyscale().posterize(4);
 	//console.log("JIMP IMG",cropped);
 	return await (base64 ? cropped.getBase64Async("image/jpeg") : cropped.getBufferAsync("image/jpeg"));
 }
@@ -79,8 +79,8 @@ let net;
 	const predictButton = document.getElementById("predict");
 	const predictOutput = document.getElementById("prediction");
 
-	const qualities = [100,50,94,93,92,91,90,80,81,82,70];
-	const ratios = [0.2,0.3];
+	const qualities = [100,50,40,30,10,5,6,3,2,1];
+	const ratios = [0.3];
 
 	/**
 	 * Train the model 
@@ -104,7 +104,7 @@ let net;
 			const processed = await process(rawPhoto, ratio, qualityPercentage);
 
 			previewContainer.src = processed;
-			const img = tf.browser.fromPixels(previewContainer);
+			const img = tf.browser.fromPixels(processed);
 			const activation = net.infer(img, true);
 
 			console.log(`Trained correct...${qualityPercentage}`);
@@ -116,22 +116,7 @@ let net;
 			"inc_1",
 			"inc_2",
 			"inc_3",
-			"inc_4",
-			"inc_5",
-			"inc_6",
-			"inc_7",
-			"inc_8",
-			"inc_9",
-			"inc_5",
-			"inc_6",
-			"inc_7",
-			"inc_8",
-			"inc_9",
-			"inc_5",
-			"inc_6",
-			"inc_7",
-			"inc_8",
-			"inc_9"
+			"inc_4"
 		];
 		trainingText.innerText = "Training incorrect samples...";
 
@@ -149,27 +134,33 @@ let net;
 
 		trainingText.innerText = "Train";
 		loadingSpinner.classList.add("d-none");
+		const classiferData = classifier.getClassifierDataset();
+		console.log(classiferData);
 	}
 
 	predictButton.onclick = async event => {
-		const preview = await process(challengePreview.src,0.2);
+		const preview = await process(challengePreview.src,0.3);
 		challengePreview.src = preview;
 		// Get the activation from mobilenet from the webcam.
 		const activation = net.infer(challengePreview, 'conv_preds');
 
 		// Get the most likely class and confidence from the classifier module.
-		const result = await classifier.predictClass(activation);
+		const result = await classifier.predictClass(activation,10);
 		const confidence = parseInt((result.confidences[result.label]*100).toFixed(2));
 		console.log({ result });
 
+		/*
 		const message = confidence > 95 && result.label == 0   ? 
 						"This is the correct image (duplicate)" :
 						"This is the incorrect image";
-
+						*/
+		predictOutput.innerHTML = JSON.stringify(result,null,2);
+						/*
 		predictOutput.innerHTML = `${message}<br>
 			<b>Confidence:</b>${confidence}%<br>
 			<b>Label:</b>${classes[result.label]}
 		`;
+		*/
 	}
 
 })().catch(error => {
